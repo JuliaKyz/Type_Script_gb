@@ -1,5 +1,6 @@
+import { Flat, FlatRentSdk } from "./flat-rent-sdk.js";
 import { renderBlock } from "./lib.js";
-import { FavoritePlace, Place } from "./Place.js";
+import { FavoritePlace, FavoritePlaceFlat, Place } from "./Place.js";
 import {
   getFavoritesAmount,
   getFavoritesItems,
@@ -42,6 +43,7 @@ function toggleFavoriteItem(place: Place) {
     name: place.name,
     image: place.image,
   };
+
   let favoriteItems = getFavoritesItems();
   if (isFavoritePlaceExist(favoritePlace)) {
     favoriteItems = favoriteItems.filter(
@@ -54,30 +56,19 @@ function toggleFavoriteItem(place: Place) {
   localStorage.setItem("favoriteItems", JSON.stringify(favoriteItems));
 }
 
+function createFavoritePlaceFromFlat(flat: Flat): FavoritePlace {
+  return {
+    id: flat.id,
+    name: flat.title,
+    image: flat.photos[0],
+  };
+}
+
 const places = [];
 
-async function getData(id: string) {
+async function getDataFrom3030(id: string) {
   return fetch(`http://localhost:3030/places/${id}`)
     .then<Place>((response) => {
-      // response.text();
-      // .then((response) => {
-      //   // console.log(response);
-
-      //   // response.text();
-      //   if (response.status === 400) {
-      //     renderToast(
-      //       {
-      //         text: `${response.statusText}. Error ${response.status}`,
-      //         type: "error",
-      //       },
-      //       {
-      //         name: "Понял",
-      //         handler: () => {
-      //           console.log("Уведомление закрыто");
-      //         },
-      //       }
-      //     );
-      //   }
       return response.json(); // Error!
     })
     .then((data) => {
@@ -106,12 +97,60 @@ async function getData(id: string) {
       </div>
     </div>`;
     });
-  // return resultAPI;
 }
 
+const sdk = new FlatRentSdk();
+const today = new Date();
+
+function getDataFromSdk() {
+  return sdk.get("vnd331").then((flat) => {
+    console.log(flat);
+    places.push(flat);
+    return `<div class="result-container">
+        <div class="result-img-container">
+        ${!isFavoritePlaceExist(createFavoritePlaceFromFlat(flat))
+        ? `<div id="${flat.id}" class="favorites"></div>`
+        : `<div id="${flat.id}" class="favorites active"></div>`
+      }
+          <img class="result-img" src=${flat.photos[0]} alt="">
+        </div>
+        <div class="result-info">
+          <div class="result-info--header">
+            <p>${flat.title}</p>
+            <p class="price">${flat.price}</p>
+          </div>
+          <div class="result-info--map"><i class="map-icon"></i> ${flat.coordinates
+      } км от вас</div>
+          <div class="result-info--descr">${flat.details}</div>
+          <div class="result-info--footer">
+            <div>
+              <button>Забронировать</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+console.log(places);
+
 export async function renderSearchResultsBlock() {
-  const place1 = await getData("1");
-  const place2 = await getData("2");
+  let place1;
+  let place2;
+  let place3;
+  if (
+    (document.getElementById("flat") as HTMLInputElement).checked &&
+    (document.getElementById("homy") as HTMLInputElement).checked
+  ) {
+    place1 = await getDataFrom3030("1");
+    place2 = await getDataFrom3030("2");
+    place3 = await getDataFromSdk();
+  } else if ((document.getElementById("homy") as HTMLInputElement).checked) {
+    place1 = await getDataFrom3030("1");
+    place2 = await getDataFrom3030("2");
+  } else if ((document.getElementById("flat") as HTMLInputElement).checked) {
+    place3 = await getDataFromSdk();
+  }
 
   renderBlock(
     "search-results-block",
@@ -128,12 +167,9 @@ export async function renderSearchResultsBlock() {
         </div>
     </div>
     <ul class="results-list">
-      <li class="result">
-        ${place1}
-      </li>
-      <li class="result">
-      ${place2}
-      </li>
+      ${place1 !== undefined ? `<li class="result">${place1}</li>` : ""}
+      ${place2 !== undefined ? `<li class="result">${place2}</li>` : ""}
+      ${place3 !== undefined ? `<li class="result">${place3}</li>` : ""}
     </ul>
     `
   );

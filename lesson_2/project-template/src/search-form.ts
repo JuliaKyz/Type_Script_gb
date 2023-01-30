@@ -20,33 +20,34 @@ function formatDate(date) {
   }
 }
 
+function search(searchFormData: SearchFormData) {
+  // console.log(searchFormData);
+}
+
+function onSearchClick() {
+  console.log("sadfsd");
+
+  renderSearchResultsBlock();
+  const cityForm = (document.getElementById("city") as HTMLInputElement).value;
+  const dateInForm = (
+    document.getElementById("check-in-date") as HTMLInputElement
+  ).value;
+  const dateOutForm = (
+    document.getElementById("check-out-date") as HTMLInputElement
+  ).value;
+  const priceForm = Number(
+    (document.getElementById("max-price") as HTMLInputElement).value
+  );
+
+  search({ cityForm, dateInForm, dateOutForm, priceForm });
+}
+
 export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
   const today = new Date();
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
 
   formatDate(today);
   formatDate(lastDayOfMonth);
-
-  function search(searchFormData: SearchFormData) {
-    console.log(searchFormData);
-  }
-
-  function onSearchClick() {
-    renderSearchResultsBlock();
-    const cityForm = (document.getElementById("city") as HTMLInputElement)
-      .value;
-    const dateInForm = (
-      document.getElementById("check-in-date") as HTMLInputElement
-    ).value;
-    const dateOutForm = (
-      document.getElementById("check-out-date") as HTMLInputElement
-    ).value;
-    const priceForm = Number(
-      (document.getElementById("max-price") as HTMLInputElement).value
-    );
-
-    search({ cityForm, dateInForm, dateOutForm, priceForm });
-  }
 
   renderBlock(
     "search-form-block",
@@ -59,10 +60,10 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
             <input id="city" type="text" disabled value="Санкт-Петербург" />
             <input type="hidden" disabled value="59.9386,30.3141" />
           </div>
-          <!--<div class="providers">
-            <label><input type="checkbox" name="provider" value="homy" checked /> Homy</label>
-            <label><input type="checkbox" name="provider" value="flat-rent" checked /> FlatRent</label>
-          </div>--!>
+          <div class="providers">
+            <label><input type="checkbox" id="homy" name="provider" value="homy" checked /> Homy</label>
+            <label><input type="checkbox" id="flat" name="provider" value="flat-rent" checked /> FlatRent</label>
+          </div>
         </div>
         <div class="row">
           <div>
@@ -86,7 +87,7 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
             <input id="max-price" type="text" value="" name="price" class="max-price" />
           </div>
           <div>
-            <div><button id="searchBtn" onclick=${onSearchClick}>Найти</button></div>
+            <div><button type="button" id="searchBtn">Найти</button></div>
           </div>
         </div>
       </fieldset>
