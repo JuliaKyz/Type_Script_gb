@@ -1,54 +1,32 @@
-import { renderBlock } from './lib.js'
-
-interface SearchFormData {
-  cityForm: string;
-  dateInForm: string;
-  dateOutForm: string;
-  priceForm: number;
-}
-
+import { renderBlock } from './lib.js';
 function formatDate(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  if (month < 10) {
-    return `${year}-0${month}-${day}`;
-  } else {
-    return `${year}-${month}-${day}`;
-  }
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    if (month < 10) {
+        return `${year}-0${month}-${day}`;
+    }
+    else {
+        return `${year}-${month}-${day}`;
+    }
 }
-
-export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
-  const today = new Date();
-  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
-
-  formatDate(today);
-  formatDate(lastDayOfMonth);
-
-  function search(searchFormData: SearchFormData) {
-    console.log(searchFormData);
-  }
-
-  function onSearchClick() {
-    const cityForm = (document.getElementById("city") as HTMLInputElement)
-      .value;
-    const dateInForm = (
-      document.getElementById("check-in-date") as HTMLInputElement
-    ).value;
-    const dateOutForm = (
-      document.getElementById("check-out-date") as HTMLInputElement
-    ).value;
-    const priceForm = Number(
-      (document.getElementById("max-price") as HTMLInputElement).value
-    );
-
-    search({ cityForm, dateInForm, dateOutForm, priceForm });
-  }
-
-  renderBlock(
-    'search-form-block',
-    `
+export function renderSearchFormBlock(dateIn, dateOut) {
+    const today = new Date();
+    const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 2, 0);
+    formatDate(today);
+    formatDate(lastDayOfMonth);
+    function search(searchFormData) {
+        console.log(searchFormData);
+    }
+    function onSearchClick() {
+        const cityForm = document.getElementById("city")
+            .value;
+        const dateInForm = document.getElementById("check-in-date").value;
+        const dateOutForm = document.getElementById("check-out-date").value;
+        const priceForm = Number(document.getElementById("max-price").value);
+        search({ cityForm, dateInForm, dateOutForm, priceForm });
+    }
+    renderBlock('search-form-block', `
     <form>
       <fieldset class="search-filedset">
         <div class="row">
@@ -81,6 +59,5 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
         </div>
       </fieldset>
     </form>
-    `
-  )
+    `);
 }

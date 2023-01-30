@@ -1,4 +1,5 @@
-import { renderBlock } from './lib.js'
+import { renderBlock } from "./lib.js";
+import { renderSearchResultsBlock } from "./search-results.js";
 
 interface SearchFormData {
   cityForm: string;
@@ -31,6 +32,7 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
   }
 
   function onSearchClick() {
+    renderSearchResultsBlock();
     const cityForm = (document.getElementById("city") as HTMLInputElement)
       .value;
     const dateInForm = (
@@ -47,7 +49,7 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
   }
 
   renderBlock(
-    'search-form-block',
+    "search-form-block",
     `
     <form>
       <fieldset class="search-filedset">
@@ -65,22 +67,31 @@ export function renderSearchFormBlock(dateIn: Date, dateOut: Date) {
         <div class="row">
           <div>
             <label for="check-in-date">Дата заезда</label>
-            <input id="check-in-date" type="date" value="2021-05-11" min="2021-05-11" max="2021-06-30" name="checkin" />
+            <input id="check-in-date" type="date" value=${formatDate(
+      dateIn
+    )} min=${formatDate(today)} max=${formatDate(
+      lastDayOfMonth
+    )} name="checkin" />
           </div>
           <div>
             <label for="check-out-date">Дата выезда</label>
-            <input id="check-out-date" type="date" value="2021-05-13" min="2021-05-11" max="2021-06-30" name="checkout" />
+            <input id="check-out-date" type="date" value=${formatDate(
+      dateOut
+    )} min=${formatDate(today)} max=${formatDate(
+      lastDayOfMonth
+    )} name="checkout" />
           </div>
           <div>
             <label for="max-price">Макс. цена суток</label>
             <input id="max-price" type="text" value="" name="price" class="max-price" />
           </div>
           <div>
-            <div><button>Найти</button></div>
+            <div><button id="searchBtn" onclick=${onSearchClick}>Найти</button></div>
           </div>
         </div>
       </fieldset>
     </form>
     `
-  )
+  );
+  document.getElementById("searchBtn").addEventListener("click", onSearchClick);
 }
