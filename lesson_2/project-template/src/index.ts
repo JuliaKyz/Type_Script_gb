@@ -41,8 +41,6 @@ if (typeof window !== undefined && window && window.addEventListener) {
 } else {
   console.log("This is not browser!");
 }
-
-
 // console.log('Hello World!')
 
 

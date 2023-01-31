@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc src/index.ts --outDir dist --target es2015",
+    // "build": "tsc src/index.ts --outDir dist --target es2015"
+    "build": "rd -r public\\scripts 2>null & tsc",
+    "build:dev": "rd -r public\\scripts 2>null & tsc -p tsconfig-dev.json",
     "start": "http-server -p 3000",
     "lint": "eslint src --ext .js --ext .ts",
     "lint-fix": "eslint src --ext .js --ext .ts --fix"
